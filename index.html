@@ -31,7 +31,7 @@
 
 <body>
     <div>
-        <div class="bg-img">
+        <div col-md-6 class="bg-img">
             <form action="#" onsubmit="onsignup(event)">
                 <h3>Book a call</h3><br>
                 <p>Book a call slot and our representative will call you within 1hr of selected time.</p>
@@ -44,13 +44,12 @@
                 <input type="submit" value="Submit">
                 <ul id = "users"></ul>
                 
-            </form>            
+            </form> 
+            <ul id="listOfUsers">
+            </ul>           
         </div>
-        
     </div>
 
-    
-    <!-- <img src="img\bg-image.webp" alt="HD black Image" width="500" height="600"> -->
     <script>
         function onsignup(event)
         {
@@ -68,8 +67,16 @@
                 phone
             }
             let obj_serialisation = JSON.stringify(myObj);
-            userdetails.push(obj_serialisation);
-                localStorage.setItem('userdetail', userdetails)
+            
+            localStorage.setItem(myObj.email, obj_serialisation)
+            AdduserToDom(myObj)
+            
+        }
+
+        function AdduserToDom(user){
+            const parentnode = document.getElementById('listOfUsers')
+            const childnode = `<li> ${user.name} - ${user.email} </li>`
+            parentnode.innerHTML = parentnode.innerHTML + childnode
         }
     </script>
 </body>
