@@ -45,7 +45,6 @@
             </form> 
             <ul id="listOfUsers">
             </ul>
-                       
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
@@ -73,9 +72,7 @@
             })
             // let obj_serialisation = JSON.stringify(myObj);
             
-            // localStorage.setItem(myObj.email, obj_serialisation)
-           
-            
+            // localStorage.setItem(myObj.email, obj_serialisation)            
         }
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -84,40 +81,59 @@
                 for(let i=0; i<response.data.length; i++){
                     AdduserToDom(response.data[i]);
                 }
+                if(localStorage.getItem(user.email)!== null){
+                removeUserFromScreen(user.email);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
             })
         })
 
         function AdduserToDom(user){
-           
-            // if(localStorage.getItem(user.email)!== null){
-            //     removeUserFromScreen(user.email);
-            // }
+            
             const parentnode = document.getElementById('listOfUsers')
-            const childnode = `<li id=${user.email}> ${user.name} - ${user.email} 
-                <button onclick='deleteUser("${user.email}")'>Delete</button></li>`
+            const childnode = `<li id=${user._id}> ${user.name} - ${user.email} 
+                <button onclick='editUser('${user._id},${user.email},${user.name},${user.phone}')'>Edit</button>
+                <button onclick='deleteUser("${user._id}")'>Delete</button></li>`
             parentnode.innerHTML = parentnode.innerHTML + childnode
         }
 
-        function deleteUser(email){
-            axios.delete('https://crudcrud.com/api/99174946149740e5b48b994c8ef3b743/appointmentData',email)
+        function deleteUser(id){
+            axios.delete(`https://crudcrud.com/api/99174946149740e5b48b994c8ef3b743/appointmentData/${id}`)
             .then((response) => {
-                const parentnode = document.getElementById('listOfUsers')
-            const childnodetobedeleted = document.getElementById(response.id)
-            parentnode.removeChild(childnodetobedeleted);
+               removeUserFromScreen(id)
+            })
+            .catch((err) => {
+                console.log(err);
             })
             // const parentnode = document.getElementById('listOfUsers')
             // const childnodetobedeleted = document.getElementById(email)
             // parentnode.removeChild(childnodetobedeleted);
         }
 
-    function removeUserFromScreen(email){
+    function removeUserFromScreen(id){
         const parentnode = document.getElementById('listOfUsers')
-        const childnodetobedeleted = document.getElementById(email)
+        const childnodetobedeleted = document.getElementById(id)
         if(childnodetobedeleted){
             parentnode.removeChild(childnodetobedeleted);
         }
         
 
+    }
+
+    function editUser(id,email,name,phone){
+        const parentnode = document.getElementById('listOfUsers')
+            const childnodetobedeleted = document.getElementById(email)
+            parentnode.removeChild(childnodetobedeleted);
+        axios.put(`https://crudcrud.com/api/99174946149740e5b48b994c8ef3b743/appointmentData/${id}`)
+        .then((response) => {
+            removeUserFromScreen(id)
+            AdduserToDom()
+        })
+        .catch((err) => {
+            console.log(err);
+        })
     }
     </script>
 </body>
